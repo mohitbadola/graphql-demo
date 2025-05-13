@@ -78,4 +78,28 @@ class PlayerControllerTest {
                 .path("findOne")
                 .valueIsNull();
     }
+
+    @Test
+    void testShouldCreateNewPlayer(){
+        String document = """
+                mutation create($name: String, $team: Team) {
+                  create(name: $name, team: $team) {
+                    id
+                    name
+                    team
+                  }
+                }
+                """;
+
+        tester.document(document)
+                .variable("name", "Sam Curran")
+                .variable("team", Team.CSK)
+                .execute()
+                .path("create")
+                .entity(Player.class)
+                .satisfies(player -> {
+                    Assertions.assertEquals("Sam Curran", player.name());
+                    Assertions.assertEquals(Team.CSK, player.team());
+                });
+    }
 }
