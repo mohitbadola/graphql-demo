@@ -107,4 +107,31 @@ class PlayerControllerTest {
                     Assertions.assertEquals(currentCount+1, playerService.findAll().size());
                 });
     }
+
+    @Test
+    void testShouldUpdateExistingPlayer(){
+        String document = """
+                mutation update($id: ID, $name: String, $team: Team) {
+                  update(id: $id, name: $name, team: $team) {
+                    id
+                    name
+                    team
+                  }
+                }
+                """;
+
+        tester.document(document)
+                .variable("id", 1)
+                .variable("name", "Thala")
+                .variable("team", Team.CSK)
+                .execute()
+                .path("update")
+                .entity(Player.class);
+
+        Player updatedPlayer = playerService.findOne(1).get();
+        Assertions.assertEquals("Thala", updatedPlayer.name());
+        Assertions.assertEquals(Team.CSK, updatedPlayer.team());
+
+    }
+
 }
