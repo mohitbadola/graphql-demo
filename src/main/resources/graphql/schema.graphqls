@@ -1,5 +1,5 @@
 type Player {
-    id: ID
+    id: ID!
     name: String
     team: Team
 }
