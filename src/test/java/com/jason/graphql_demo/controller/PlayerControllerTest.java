@@ -60,4 +60,22 @@ class PlayerControllerTest {
                 });
     }
 
+    @Test
+    void testInvalidIdShouldReturnNull(){
+        String document = """
+                query findOne($id: ID) {
+                  findOne(id: $id) {
+                    id
+                    name
+                    team
+                  }
+                }
+                """;
+
+        tester.document(document)
+                .variable("id", 100)
+                .execute()
+                .path("findOne")
+                .valueIsNull();
+    }
 }
