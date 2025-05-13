@@ -53,13 +53,13 @@ class PlayerControllerTest {
                 """;
 
         tester.document(document)
-                .variable("id", 1)
+                .variable("id", 2)
                 .execute()
                 .path("findOne")
                 .entity(Player.class)
                 .satisfies(player -> {
-                    Assertions.assertEquals("MS Dhoni", player.name());
-                    Assertions.assertEquals(Team.CSK, player.team());
+                    Assertions.assertEquals("Virat Kohli", player.name());
+                    Assertions.assertEquals(Team.RCB, player.team());
                 });
     }
 
