@@ -18,6 +18,9 @@ class PlayerControllerTest {
     @Autowired
     GraphQlTester tester;
 
+    @Autowired
+    PlayerService playerService;
+
     @Test
     void testFindAllPlayerShouldReturnAllPlayers(){
         String document = """
@@ -81,6 +84,7 @@ class PlayerControllerTest {
 
     @Test
     void testShouldCreateNewPlayer(){
+        int currentCount = playerService.findAll().size();
         String document = """
                 mutation create($name: String, $team: Team) {
                   create(name: $name, team: $team) {
@@ -100,6 +104,7 @@ class PlayerControllerTest {
                 .satisfies(player -> {
                     Assertions.assertEquals("Sam Curran", player.name());
                     Assertions.assertEquals(Team.CSK, player.team());
+                    Assertions.assertEquals(currentCount+1, playerService.findAll().size());
                 });
     }
 }
