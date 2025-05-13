@@ -1,10 +1,10 @@
-type Player{
+type Player {
     id: ID
     name: String
     team: Team
 }
 
-enum Team{
+enum Team {
     CSK
     RCB
     KKR
@@ -14,7 +14,13 @@ enum Team{
     GT
 }
 
-type Query{
+type Query {
     findAll: [Player]
     findOne(id: ID): Player
+}
+
+type Mutation {
+    create(name: String, team: Team): Player
+    update(id: ID, name: String, team: Team): Player
+    delete(id: ID): Player
 }
