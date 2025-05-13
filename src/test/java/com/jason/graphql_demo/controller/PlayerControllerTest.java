@@ -22,7 +22,7 @@ class PlayerControllerTest {
     PlayerService playerService;
 
     @Test
-    void testFindAllPlayerShouldReturnAllPlayers(){
+    void testFindAllPlayerShouldReturnAllPlayers() {
         String document = """
                 query MyQuery {
                   findAll {
@@ -41,7 +41,7 @@ class PlayerControllerTest {
     }
 
     @Test
-    void testValidIdShouldReturnPlayer(){
+    void testValidIdShouldReturnPlayer() {
         String document = """
                 query findOne($id: ID) {
                   findOne(id: $id) {
@@ -64,7 +64,7 @@ class PlayerControllerTest {
     }
 
     @Test
-    void testInvalidIdShouldReturnNull(){
+    void testInvalidIdShouldReturnNull() {
         String document = """
                 query findOne($id: ID) {
                   findOne(id: $id) {
@@ -83,7 +83,7 @@ class PlayerControllerTest {
     }
 
     @Test
-    void testShouldCreateNewPlayer(){
+    void testShouldCreateNewPlayer() {
         int currentCount = playerService.findAll().size();
         String document = """
                 mutation create($name: String, $team: Team) {
@@ -104,12 +104,12 @@ class PlayerControllerTest {
                 .satisfies(player -> {
                     Assertions.assertEquals("Sam Curran", player.name());
                     Assertions.assertEquals(Team.CSK, player.team());
-                    Assertions.assertEquals(currentCount+1, playerService.findAll().size());
+                    Assertions.assertEquals(currentCount + 1, playerService.findAll().size());
                 });
     }
 
     @Test
-    void testShouldUpdateExistingPlayer(){
+    void testShouldUpdateExistingPlayer() {
         String document = """
                 mutation update($id: ID, $name: String, $team: Team) {
                   update(id: $id, name: $name, team: $team) {
@@ -132,6 +132,28 @@ class PlayerControllerTest {
         Assertions.assertEquals("Thala", updatedPlayer.name());
         Assertions.assertEquals(Team.CSK, updatedPlayer.team());
 
+    }
+
+    @Test
+    void testShouldRemovePlayerWithValidId() {
+
+        int currentCount = playerService.findAll().size();
+
+        String document = """
+                mutation delete($id: ID) {
+                  delete(id: $id) {
+                    id
+                    name
+                    team
+                  }
+                }
+                """;
+        tester.document(document)
+                .variable("id", 1)
+                .executeAndVerify();
+
+        Assertions.assertEquals(currentCount - 1, playerService.findAll().size());
+        Assertions.assertTrue(playerService.findOne(1).isEmpty());
     }
 
 }
